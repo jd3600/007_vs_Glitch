@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/webstorm-icon-logo.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>007 DUEL - CLOUD9 vs GLITCH</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="tablet-container">
+      <div class="game-header">
+        007: Cloud9 vs The Glitch
+        <button id="mode-toggle" class="mode-toggle">MODE: CHRONO</button>
+      </div>
+      
+      <div class="game-world">
+        <!-- Avatar Cloud9 à gauche -->
+        <div id="player-zone" class="avatar-zone left-zone">
+          <video id="player-video" class="side-video" muted playsinline></video>
+        </div>
+
+        <!-- Cercle central -->
+        <div class="center-zone">
+          <div class="action-circle">
+            <svg class="timer-svg" viewBox="0 0 108 108">
+              <circle class="timer-bg" cx="54" cy="54" r="54"></circle>
+              <circle class="timer-bar" cx="54" cy="54" r="54" style="stroke-dashoffset: 0;"></circle>
+            </svg>
+            <div class="video-overlay">
+              <video id="vs-video" class="center-video" muted playsinline></video>
+            </div>
+            <div id="duel-labels" class="duel-overlay">
+              <div class="player-action-label">ACTION</div>
+              <div class="opponent-action-label">ACTION</div>
+            </div>
+            <div class="timer-content">
+              <div class="timer-text">3... 2-1...</div>
+              <div class="status-text">ACTION!</div>
+            </div>
+          </div>
+          <div id="controls-zone" class="action-buttons"></div>
+        </div>
+
+        <!-- Avatar Glitch à droite -->
+        <div id="opponent-zone" class="avatar-zone right-zone">
+          <video id="opponent-video" class="side-video" muted playsinline></video>
+        </div>
+      </div>
+
+      <div id="bottom-interface" class="bottom-interface">
+        <div id="debug-console" class="debug-console"></div>
+        <div id="right-stats-panel" class="right-stats-panel"></div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
