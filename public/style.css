@@ -52,10 +52,10 @@ body {
 
 .game-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
-    font-size: 20px;
+    padding: 0 20px;
+    font-size: 14px;
     letter-spacing: 2px;
     color: var(--neon-blue);
     text-shadow: 0 0 10px var(--neon-blue);
@@ -63,6 +63,46 @@ body {
     text-transform: uppercase;
     font-weight: bold;
     position: relative;
+    height: 60px;
+}
+
+.header-title {
+    width: 150px;
+}
+
+.hud-center {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.hud-lifebar-wrapper {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hud-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.player-life .hud-label {
+    color: var(--neon-blue);
+    text-align: left;
+}
+
+.opponent-life .hud-label {
+    color: var(--neon-pink);
+    text-align: right;
+}
+
+.hud-lifebar-wrapper .health-bar-container {
+    margin-bottom: 0;
 }
 
 .mode-toggle {
@@ -76,8 +116,7 @@ body {
     border-radius: 5px;
     transition: all 0.3s;
     text-transform: uppercase;
-    position: absolute;
-    right: 20px;
+    white-space: nowrap;
 }
 
 .mode-toggle:hover {
@@ -97,111 +136,146 @@ body {
 }
 
 /* Avatars */
-.avatar-container {
-    width: 50%;
-    height: 75vh !important;
+.avatar-image {
+    width: 800px; /* Augmenté de 600px */
+    height: 1067px; /* Augmenté de 800px pour garder le ratio */
+    position: absolute;
+    bottom: -300px; /* Descendu davantage pour mieux voir les visages */
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.cloud9 {
+    left: -200px; /* Décalé plus à gauche pour accommoder la taille */
+    background-position: center bottom;
+}
+
+.glitch {
+    right: -200px; /* Décalé plus à droite */
+    background-position: center bottom;
+    animation: glitch-anim 2s infinite;
+}
+
+/* HUD elements (Lifebars, Ammo, Stats) */
+.player, .opponent {
+    position: absolute;
+    bottom: 180px; /* Ajusté pour être au dessus des bras/buste */
+    width: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    z-index: 1;
-    transition: transform 0.3s ease;
-    position: absolute;
+    z-index: 10;
     pointer-events: none;
-    bottom: 0;
-    background-position: top center; /* FOCUS SUR LE VISAGE (Casque visible) */
-    background-size: contain;
-    background-repeat: no-repeat;
 }
 
-.left-zone .avatar-container {
-    left: 0;
+.player {
+    left: 80px;
 }
 
-.right-zone .avatar-container {
-    right: 0;
+.opponent {
+    right: 80px;
 }
 
-.avatar-container * {
-    pointer-events: auto; /* Réactive les clics sur les éléments internes si besoin */
+.health-bar-container {
+    width: 100%;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--neon-blue);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.avatar-container:hover {
-    transform: translateY(-5px);
+.opponent .health-bar-container {
+    border-color: var(--neon-pink);
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-blue), #ffffff);
+    box-shadow: 0 0 10px var(--neon-blue);
+    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.opponent .health-fill {
+    background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+    box-shadow: 0 0 10px var(--neon-pink);
 }
 
 .ammo-mini-grid {
-    position: absolute;
-    bottom: 212px; /* Remonté au-dessus du terminal (180px + marge) */
-    width: 300px;
+    width: 100%;
     display: flex;
     justify-content: center;
     gap: 4px;
-    z-index: 10;
+    margin-bottom: 0;
 }
 
 .ammo-cell-mini {
     flex: 1;
-    height: 6px;
+    height: 10px;
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 210, 255, 0.3);
+    border: 1px solid transparent;
     border-radius: 1px;
 }
 
-.ammo-cell-mini.active {
+.player-life .ammo-cell-mini {
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.opponent-life .ammo-cell-mini {
+    border-color: rgba(255, 0, 85, 0.3);
+}
+
+.player-life .ammo-cell-mini.active {
     background: var(--neon-blue);
     box-shadow: 0 0 5px var(--neon-blue);
 }
 
-.opponent .ammo-cell-mini.active {
+.ammo-cell-mini.gain-anim {
+    animation: gain-anim 0.4s ease-out;
+}
+
+@keyframes gain-anim {
+    0% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.5); filter: brightness(2); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+
+.ammo-empty-alert {
+    animation: ammo-empty-alert 0.2s ease-in-out infinite;
+}
+
+@keyframes ammo-empty-alert {
+    0%, 100% { transform: translateX(0); background: rgba(255, 0, 85, 0.2); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.opponent-life .ammo-cell-mini.active {
     background: var(--neon-pink);
     box-shadow: 0 0 5px var(--neon-pink);
 }
 
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center top; /* Alignement en haut pour voir le visage */
-    margin-bottom: 0;
+.player-life .entity-stats {
+    text-align: left;
+    color: var(--neon-blue);
+    opacity: 0.8;
 }
 
-.player .avatar-image {
-    background-position: left top;
+.opponent-life .entity-stats {
+    text-align: right;
+    color: var(--neon-pink);
+    opacity: 0.8;
 }
 
-.opponent .avatar-image {
-    background-position: right top;
-}
-
-.avatar-image.cloud9 {
-    position: relative;
-}
-
-.avatar-image.glitch {
-    position: relative;
-    /* On garde l'animation de glitch subtile mais on ne force plus le fond violet */
-    animation: glitch-anim 2s infinite; 
-}
-
-.glitch-cloud {
-    display: none; /* Désactivé car on utilise maintenant les images glitch_*.png */
-}
-
-.glitch-cloud::before, .glitch-cloud::after {
-    content: '';
-    position: absolute;
-    top: 10%; left: 10%; width: 80%; height: 80%;
-    background: var(--neon-pink);
-    opacity: 0.5;
-    animation: jitter 0.2s infinite;
-}
-
-@keyframes jitter {
-    0% { transform: translate(0); scale: 1; }
-    50% { transform: translate(5px, -5px); scale: 1.1; }
-    100% { transform: translate(-5px, 5px); scale: 0.9; }
+.entity-stats {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
 }
 
 /* Effets de combat */
@@ -247,51 +321,6 @@ body {
     display: none; /* Nettoyage UI pour focus sur les barres tactiques */
 }
 
-.health-bar-container {
-    position: absolute;
-    bottom: 230px; /* Remonté au-dessus du bloc ammo (212px) */
-    width: 300px; /* Largeur fixe plus adaptée aux personnages très larges */
-    height: 18px; 
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid var(--neon-blue);
-    border-radius: 2px;
-    overflow: hidden;
-    z-index: 10;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.player .health-bar-container, .player .ammo-mini-grid, .player .entity-stats {
-    left: 50px; /* Décalé du bord pour être sur le corps */
-    transform: none;
-}
-
-.opponent .health-bar-container, .opponent .ammo-mini-grid, .opponent .entity-stats {
-    right: 50px; /* Décalé du bord pour être sur le corps */
-    left: auto;
-    transform: none;
-}
-
-.health-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--neon-blue), #ffffff);
-    box-shadow: 0 0 10px var(--neon-blue);
-    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.opponent .health-fill {
-    background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
-    box-shadow: 0 0 10px var(--neon-purple);
-}
-
-.entity-stats {
-    position: absolute;
-    bottom: 185px; /* Juste au dessus du terminal (180px) */
-    font-size: 14px; 
-    color: #888;
-    letter-spacing: 1px;
-    z-index: 10;
-}
-
 /* UI Centrale */
 .center-zone {
     display: flex;
@@ -327,6 +356,7 @@ body {
     align-items: center;
     z-index: 1;
     mix-blend-mode: screen; /* Pour la transparence des .mov noirs */
+    filter: brightness(1.2) contrast(1.1);
 }
 
 .center-video {
@@ -338,6 +368,9 @@ body {
     transition: opacity 0.3s;
     position: absolute;
     mix-blend-mode: screen;
+    filter: brightness(1.3) contrast(1.2) saturate(1.2);
+    -webkit-mask-image: radial-gradient(circle, black 60%, transparent 95%);
+    mask-image: radial-gradient(circle, black 60%, transparent 95%);
 }
 
 .avatar-zone {
@@ -347,8 +380,9 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    z-index: 1;
+    z-index: 1; /* Reste derrière le terminal */
     height: 100%;
+    width: 50%; /* Augmenter la zone pour éviter les coupures */
 }
 
 .bottom-interface {
@@ -368,26 +402,49 @@ body {
     right: 0;
 }
 
-.side-video {
-    width: 600px; /* Agrandissement des vidéos pour correspondre aux nouveaux géants */
-    height: 600px;
-    object-fit: contain;
+.video-fixed-container {
+    position: absolute;
+    bottom: 0;
+    width: 50%;
+    height: 100%;
+    pointer-events: none;
     z-index: 20;
+}
+
+.video-fixed-container.left {
+    left: 0;
+}
+
+.video-fixed-container.right {
+    right: 0;
+}
+
+.side-video {
+    width: 88px;
+    height: 117px;
+    object-fit: contain;
     opacity: 0;
     transition: opacity 0.3s;
     mix-blend-mode: screen;
+    filter: brightness(1.3) contrast(1.2) saturate(1.2);
     position: absolute;
-    top: 0; /* Aligné en haut avec le visage */
+    bottom: -30px;
     left: 50%;
     transform: translateX(-50%);
-    pointer-events: none;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+    mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+}
+
+#player-video {
+    margin-left: -90px;
 }
 
 #opponent-video {
+    margin-left: 90px;
 }
 
 #vs-video.visible, .side-video.visible {
-    opacity: 1;
+    opacity: 0.02;
 }
 
 .timer-svg {
@@ -514,9 +571,11 @@ body {
     gap: 15px;
     margin-top: auto;
     flex-shrink: 0;
-    z-index: 30;
+    z-index: 100; /* Augmenté pour passer devant les avatars */
     position: relative;
-    padding: 0 10px 5px 10px;
+    padding: 0 10px 10px 10px;
+    background: linear-gradient(to top, var(--bg-dark) 80%, transparent); /* Effet d'occultation à la base */
+    box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.5); /* Ombre pour renforcer l'effet de profondeur */
 }
 
 .debug-console {

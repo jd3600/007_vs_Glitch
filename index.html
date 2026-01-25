@@ -12,14 +12,39 @@
   <div id="app">
     <div class="tablet-container">
       <div class="game-header">
-        007: Cloud9 vs The Glitch
+        <span class="header-title">007 DUEL</span>
+        <div class="hud-center">
+          <div class="hud-lifebar-wrapper player-life">
+            <div class="hud-label">AGENT 007</div>
+            <div class="health-bar-container">
+              <div id="player-health-fill" class="health-fill" style="width: 100%"></div>
+            </div>
+            <div id="player-ammo-container" class="ammo-mini-grid"></div>
+            <div id="player-momentum-display" class="entity-stats">MOMENTUM: 1.0x</div>
+          </div>
+          <div class="hud-lifebar-wrapper opponent-life">
+            <div class="hud-label">THE GLITCH</div>
+            <div class="health-bar-container">
+              <div id="opponent-health-fill" class="health-fill" style="width: 100%"></div>
+            </div>
+            <div id="opponent-ammo-container" class="ammo-mini-grid"></div>
+            <div id="opponent-momentum-display" class="entity-stats">MOMENTUM: 1.0x</div>
+          </div>
+        </div>
         <button id="mode-toggle" class="mode-toggle">MODE: CHRONO</button>
       </div>
       
       <div class="game-world">
+        <!-- Conteneurs fixes pour les vidéos d'action -->
+        <div class="video-fixed-container left">
+          <video id="player-video" class="side-video" muted playsinline></video>
+        </div>
+        <div class="video-fixed-container right">
+          <video id="opponent-video" class="side-video" muted playsinline></video>
+        </div>
+
         <!-- Avatar Cloud9 à gauche -->
         <div id="player-zone" class="avatar-zone left-zone">
-          <video id="player-video" class="side-video" muted playsinline></video>
         </div>
 
         <!-- Cercle central -->
@@ -46,7 +71,6 @@
 
         <!-- Avatar Glitch à droite -->
         <div id="opponent-zone" class="avatar-zone right-zone">
-          <video id="opponent-video" class="side-video" muted playsinline></video>
         </div>
       </div>
 

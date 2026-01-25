@@ -240,7 +240,7 @@ function resolveDuel() {
         statusText.classList.remove('exposed-text');
       }
       if (isChronoMode) startCountdown();
-    }, 2000); // Temps augmenté pour mieux voir les vidéos
+    }, 4000); // Temps augmenté à 4s pour s'assurer que les vidéos finissent de jouer
   }, 1000);
 }
 
@@ -752,6 +752,13 @@ function resetGame() {
   selectedAction = null;
   updateSprite('player', 'INITIALE');
   updateSprite('opponent', 'INITIALE');
+  
+  // Reset HUD health bars
+  const playerHealthFill = document.getElementById('player-health-fill');
+  const opponentHealthFill = document.getElementById('opponent-health-fill');
+  if (playerHealthFill) playerHealthFill.style.width = '100%';
+  if (opponentHealthFill) opponentHealthFill.style.width = '100%';
+
   gameLog = ['Nouveau Duel Lancé !'];
   debugLogs = [];
   addDebugLog('GAME RESET - Initializing neural links...');
@@ -799,15 +806,6 @@ function renderGame() {
       <div class="avatar-container">
         <video id="player-video" class="side-video" muted playsinline></video>
         <div class="avatar-image cloud9"></div>
-        <div class="player">
-          <div class="health-bar-container">
-            <div class="health-fill" style="width: ${(player.health / 3) * 100}%"></div>
-          </div>
-          <div id="player-ammo-container" class="ammo-mini-grid"></div>
-          <div class="entity-stats">
-            AMMO: ${player.ammo} | MOMENTUM: ${player.momentum.toFixed(1)}x
-          </div>
-        </div>
       </div>
     `;
   }
@@ -817,17 +815,28 @@ function renderGame() {
       <div class="avatar-container">
         <video id="opponent-video" class="side-video" muted playsinline></video>
         <div class="avatar-image glitch"></div>
-        <div class="opponent">
-          <div class="health-bar-container">
-            <div class="health-fill" style="width: ${(opponent.health / 3) * 100}%"></div>
-          </div>
-          <div id="opponent-ammo-container" class="ammo-mini-grid"></div>
-          <div class="entity-stats">
-            AMMO: ${opponent.ammo} | MOMENTUM: ${opponent.momentum.toFixed(1)}x
-          </div>
-        </div>
       </div>
     `;
+  }
+
+  // Mise à jour des barres de vie indépendantes (HUD)
+  const playerHealthFill = document.getElementById('player-health-fill');
+  const opponentHealthFill = document.getElementById('opponent-health-fill');
+  const playerMomentumDisplay = document.getElementById('player-momentum-display');
+  const opponentMomentumDisplay = document.getElementById('opponent-momentum-display');
+
+  if (playerHealthFill) {
+    playerHealthFill.style.width = `${(player.health / 3) * 100}%`;
+  }
+  if (opponentHealthFill) {
+    opponentHealthFill.style.width = `${(opponent.health / 3) * 100}%`;
+  }
+
+  if (playerMomentumDisplay) {
+    playerMomentumDisplay.textContent = `MOMENTUM: ${player.momentum.toFixed(1)}x`;
+  }
+  if (opponentMomentumDisplay) {
+    opponentMomentumDisplay.textContent = `MOMENTUM: ${opponent.momentum.toFixed(1)}x`;
   }
 
   updateAmmoUI('player', player.ammo);
