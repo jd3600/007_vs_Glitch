@@ -97,7 +97,7 @@ body {
 }
 
 .opponent-life .hud-label {
-    color: var(--neon-pink);
+    color: #ff0000;
     text-align: right;
 }
 
@@ -189,8 +189,12 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+.opponent-life .health-bar-container {
+    border-color: #ff0000;
+}
+
 .opponent .health-bar-container {
-    border-color: var(--neon-pink);
+    border-color: #ff0000;
 }
 
 .health-fill {
@@ -200,9 +204,14 @@ body {
     transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.opponent-life .health-fill {
+    background: linear-gradient(90deg, #ff0000, #ff4444);
+    box-shadow: 0 0 10px #ff0000;
+}
+
 .opponent .health-fill {
-    background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
-    box-shadow: 0 0 10px var(--neon-pink);
+    background: linear-gradient(90deg, #ff0000, #ff4444);
+    box-shadow: 0 0 10px #ff0000;
 }
 
 .ammo-mini-grid {
@@ -255,8 +264,8 @@ body {
 }
 
 .opponent-life .ammo-cell-mini.active {
-    background: var(--neon-pink);
-    box-shadow: 0 0 5px var(--neon-pink);
+    background: #ff0000;
+    box-shadow: 0 0 5px #ff0000;
 }
 
 .player-life .entity-stats {
@@ -267,7 +276,7 @@ body {
 
 .opponent-life .entity-stats {
     text-align: right;
-    color: var(--neon-pink);
+    color: #ff0000;
     opacity: 0.8;
 }
 
@@ -356,7 +365,7 @@ body {
     align-items: center;
     z-index: 1;
     mix-blend-mode: screen; /* Pour la transparence des .mov noirs */
-    filter: brightness(1.2) contrast(1.1);
+    filter: brightness(1.3) contrast(1.1); /* brightness + 10% (de 1.2) */
 }
 
 .center-video {
@@ -368,9 +377,11 @@ body {
     transition: opacity 0.3s;
     position: absolute;
     mix-blend-mode: screen;
-    filter: brightness(1.3) contrast(1.2) saturate(1.2);
-    -webkit-mask-image: radial-gradient(circle, black 60%, transparent 95%);
-    mask-image: radial-gradient(circle, black 60%, transparent 95%);
+    filter: brightness(1.3) contrast(1.1); /* brightness + 10% (de 1.2) */
+}
+
+.center-video.visible {
+    opacity: 1;
 }
 
 .avatar-zone {
@@ -420,19 +431,19 @@ body {
 }
 
 .side-video {
-    width: 88px;
-    height: 117px;
+    width: 440px;
+    height: 587px;
     object-fit: contain;
     opacity: 0;
     transition: opacity 0.3s;
     mix-blend-mode: screen;
-    filter: brightness(1.3) contrast(1.2) saturate(1.2);
+    filter: brightness(3) contrast(2.5) saturate(1.2);
     position: absolute;
-    bottom: -30px;
+    bottom: -120px;
     left: 50%;
     transform: translateX(-50%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
-    mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+    mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
 }
 
 #player-video {
@@ -443,8 +454,8 @@ body {
     margin-left: 90px;
 }
 
-#vs-video.visible, .side-video.visible {
-    opacity: 0.02;
+.side-video.visible {
+    opacity: 0.36; /* + ~10% de 0.33 */
 }
 
 .timer-svg {
@@ -483,16 +494,18 @@ body {
 }
 
 .timer-text {
-    font-size: 24px;
+    font-size: 26px; /* + ~10% de 24px */
     font-weight: bold;
     color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 .status-text {
-    font-size: 12px;
+    font-size: 14px; /* + ~10% de 12px */
     color: var(--neon-blue);
     letter-spacing: 2px;
     text-transform: uppercase;
+    text-shadow: 0 0 10px var(--neon-blue);
 }
 
 .exposed-text {

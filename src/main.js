@@ -34,44 +34,18 @@ const SPRITE_PATHS = {
   opponent: '/assets/players/glitch_',
 };
 
-const SPRITE_STATES = {
-  IDLE: 'initiale.png',
-  FETCH: 'fetch.png',
-  ENCRYPT: 'encrypt.png',
-  PUSH1: 'push1.png',
-  PUSH2: 'push2.png',
-};
-
 /**
- * Met à jour le sprite d'un personnage
- * @param {string} entity - 'player' ou 'opponent'
- * @param {string} state - L'état du sprite (SPRITE_STATES)
+ * Met à jour le sprite d'un personnage (Désactivé : garde l'image initiale)
+ * @param {string} type - 'player' ou 'opponent'
  */
-function updateSprite(type, state) {
+function updateSprite(type) {
+  // Désactivé : l'utilisateur veut garder 007_initiale et glitch_initiale sans changement
   const element = document.querySelector(
     type === 'player' ? '.avatar-image.cloud9' : '.avatar-image.glitch',
   );
   const path = SPRITE_PATHS[type];
-
-  if (state === 'PUSH') {
-    // Séquence PUSH : Étape 1 (Boule)
-    element.style.backgroundImage = `url(${path}push1.png)`;
-
-    setTimeout(() => {
-      // Étape 2 (Faisceau/Impact)
-      element.style.backgroundImage = `url(${path}push2.png)`;
-
-      setTimeout(() => {
-        // Retour à la normale
-        element.style.backgroundImage = `url(${path}initiale.png)`;
-      }, 800);
-    }, 150); // 150ms pour l'anticipation
-  } else {
-    // Autres états (FETCH, ENCRYPT, IDLE)
-    // On convertit en minuscule pour correspondre au nom de fichier, sauf pour INITIALE qui devient initiale
-    const fileName =
-      state === 'INITIALE' ? 'initiale.png' : state.toLowerCase() + '.png';
-    element.style.backgroundImage = `url(${path}${fileName})`;
+  if (element) {
+    element.style.backgroundImage = `url(${path}initiale.png)`;
   }
 }
 
@@ -163,9 +137,6 @@ function startCountdown() {
   if (timerInterval) clearInterval(timerInterval);
   selectedAction = null; // Reset de l'action sélectionnée au début du tour
   isGameInAction = false; // Le combat n'a pas encore commencé durant le décompte
-
-  updateSprite('player', 'INITIALE'); // Force le repos
-  updateSprite('opponent', 'INITIALE'); // Force le repos
 
   // Phase 1 : Lancement de la vidéo ACTION
   playVideo('ACTION');
@@ -280,8 +251,6 @@ function resolveExposedActions(p2Action) {
   // Actions de préparation de l'IA
   if (p2Action === ACTIONS.FETCH) {
     playVideo({ right: ACTIONS.FETCH });
-    updateSprite('opponent', 'FETCH');
-    setTimeout(() => updateSprite('opponent', 'INITIALE'), 1000);
     const { success, detail } = calculateProbability('opponent', 0.9 + 0.2); // +20%
     addDebugLog(`OPPONENT FETCH (EXPOSED): ${detail}`);
     if (success) {
@@ -293,14 +262,11 @@ function resolveExposedActions(p2Action) {
   if (p2Action === ACTIONS.ENCRYPT) {
     playVideo({ right: ACTIONS.ENCRYPT });
     opponent.isShielded = true;
-    updateSprite('opponent', 'ENCRYPT');
-    setTimeout(() => updateSprite('opponent', 'INITIALE'), 800);
   }
 
   // Action d'attaque de l'IA
   if (p2Action === ACTIONS.PUSH) {
     playVideo({ right: ACTIONS.PUSH });
-    updateSprite('opponent', 'PUSH');
     opponent.ammo--;
     // Le joueur est à découvert, donc pas de bouclier possible
     player.health--;
@@ -620,8 +586,6 @@ function resolveActions(p1Action, p2Action) {
   // 1. Actions de préparation (Fetch, Encrypt)
   if (p1Action === ACTIONS.FETCH) {
     playVideo({ left: ACTIONS.FETCH });
-    updateSprite('player', 'FETCH');
-    setTimeout(() => updateSprite('player', 'INITIALE'), 1000);
     const { success, detail } = calculateProbability('player', 0.9);
     addDebugLog(`PLAYER FETCH: ${detail}`);
     if (success) {
@@ -638,14 +602,10 @@ function resolveActions(p1Action, p2Action) {
   if (p1Action === ACTIONS.ENCRYPT) {
     playVideo({ left: ACTIONS.ENCRYPT });
     player.isShielded = true;
-    updateSprite('player', 'ENCRYPT');
-    setTimeout(() => updateSprite('player', 'INITIALE'), 1000);
   }
 
   if (p2Action === ACTIONS.FETCH) {
     playVideo({ right: ACTIONS.FETCH });
-    updateSprite('opponent', 'FETCH');
-    setTimeout(() => updateSprite('opponent', 'INITIALE'), 1000);
     const { success, detail } = calculateProbability('opponent', 0.9);
     addDebugLog(`OPPONENT FETCH: ${detail}`);
     if (success) {
@@ -658,14 +618,11 @@ function resolveActions(p1Action, p2Action) {
   if (p2Action === ACTIONS.ENCRYPT) {
     playVideo({ right: ACTIONS.ENCRYPT });
     opponent.isShielded = true;
-    updateSprite('opponent', 'ENCRYPT');
-    setTimeout(() => updateSprite('opponent', 'INITIALE'), 1000);
   }
 
   // 2. Actions d'attaque (Push)
   if (p1Action === ACTIONS.PUSH) {
     playVideo({ left: ACTIONS.PUSH });
-    updateSprite('player', 'PUSH');
     player.ammo--;
     updateAmmoUI('player', player.ammo); // Mise à jour après consommation
     const critBase = 0;
@@ -707,7 +664,6 @@ function resolveActions(p1Action, p2Action) {
 
   if (p2Action === ACTIONS.PUSH) {
     playVideo({ right: ACTIONS.PUSH });
-    updateSprite('opponent', 'PUSH');
     opponent.ammo--;
     updateAmmoUI('opponent', opponent.ammo);
     if (!player.isShielded) {
@@ -750,8 +706,6 @@ function resetGame() {
   opponent = { ...INITIAL_STATE };
   isGameInAction = false;
   selectedAction = null;
-  updateSprite('player', 'INITIALE');
-  updateSprite('opponent', 'INITIALE');
   
   // Reset HUD health bars
   const playerHealthFill = document.getElementById('player-health-fill');
@@ -769,13 +723,14 @@ function resetGame() {
   if (isChronoMode) startCountdown();
 }
 
-function renderGame() {
+function renderGame(forceInit = false) {
   const playerZone = document.getElementById('player-zone');
   const opponentZone = document.getElementById('opponent-zone');
 
-  // Initialisation des sprites si non présents
+  // Initialisation des sprites si non présents ou forcée
   const checkPlayerSprite = document.querySelector('.avatar-image.cloud9');
   const needsInit =
+    forceInit ||
     !checkPlayerSprite ||
     (checkPlayerSprite && !checkPlayerSprite.style.backgroundImage);
 
@@ -793,27 +748,17 @@ function renderGame() {
     };
   }
 
-  if (playerZone) {
-    // On ne reconstruit pas le innerHTML si une vidéo est en cours de lecture
-    // pour éviter de couper la vidéo à cause du rafraîchissement
-    const pVideo = document.getElementById('player-video');
-    if (pVideo && pVideo.classList.contains('visible')) {
-      // Mise à jour minimale sans toucher au DOM de l'avatar si possible
-      // Mais comme on doit mettre à jour les barres de vie, on va juste s'assurer que l'élément video reste.
-    }
-
+  if (playerZone && (forceInit || !playerZone.innerHTML || playerZone.innerHTML.trim() === '')) {
     playerZone.innerHTML = `
       <div class="avatar-container">
-        <video id="player-video" class="side-video" muted playsinline></video>
         <div class="avatar-image cloud9"></div>
       </div>
     `;
   }
 
-  if (opponentZone) {
+  if (opponentZone && (forceInit || !opponentZone.innerHTML || opponentZone.innerHTML.trim() === '')) {
     opponentZone.innerHTML = `
       <div class="avatar-container">
-        <video id="opponent-video" class="side-video" muted playsinline></video>
         <div class="avatar-image glitch"></div>
       </div>
     `;
@@ -936,14 +881,15 @@ function renderGame() {
   }
 
   if (needsInit) {
-    updateSprite('player', 'INITIALE');
-    updateSprite('opponent', 'INITIALE');
+    // Les sprites sont maintenant gérés pour rester sur initiale.png
+    updateSprite('player');
+    updateSprite('opponent');
   }
 }
 
 // Initialisation au chargement
 window.onload = () => {
-  renderGame();
+  renderGame(true); // Passer true pour forcer l'init si besoin
   updateAmmoUI('player', player.ammo);
   updateAmmoUI('opponent', opponent.ammo);
   if (isChronoMode) startCountdown();
