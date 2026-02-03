@@ -189,12 +189,16 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.opponent-life .health-bar-container {
-    border-color: #ff0000;
+.opponent-life .health-bar-container,
+.opponent .health-bar-container {
+    border-color: #ff0044 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 68, 0.5);
 }
 
-.opponent .health-bar-container {
-    border-color: #ff0000;
+.opponent-life .health-fill,
+.opponent .health-fill {
+    background: linear-gradient(90deg, #ff0000, #ff4444) !important;
+    box-shadow: 0 0 15px #ff0044 !important;
 }
 
 .health-fill {
