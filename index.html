@@ -5,12 +5,17 @@
   <link rel="icon" type="image/svg+xml" href="/webstorm-icon-logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>007 DUEL - CLOUD9 vs GLITCH</title>
+  
   <link rel="stylesheet" href="/style.css">
+  
   <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2582532644612570" crossorigin="anonymous"></script>
 </head>
 <body>
   <div id="app">
     <div class="tablet-container">
+      
       <div class="game-header">
         <span class="header-title">007 DUEL</span>
         <div class="hud-center">
@@ -35,7 +40,6 @@
       </div>
       
       <div class="game-world">
-        <!-- Conteneurs fixes pour les vidéos d'action -->
         <div class="video-fixed-container left">
           <video id="player-video" class="side-video" muted playsinline></video>
         </div>
@@ -43,23 +47,16 @@
           <video id="opponent-video" class="side-video" muted playsinline></video>
         </div>
 
-        <!-- Avatar Cloud9 à gauche -->
-        <div id="player-zone" class="avatar-zone left-zone">
-        </div>
+        <div id="player-zone" class="avatar-zone left-zone"></div>
 
-        <!-- Cercle central -->
         <div class="center-zone">
           <div class="action-circle">
             <svg class="timer-svg" viewBox="0 0 108 108">
-              <circle class="timer-bg" cx="54" cy="54" r="54"></circle>
+              <circle class="timer-bg" cx="54" cy="54"></circle>
               <circle class="timer-bar" cx="54" cy="54" r="54" style="stroke-dashoffset: 0;"></circle>
             </svg>
             <div class="video-overlay">
               <video id="vs-video" class="center-video" muted playsinline></video>
-            </div>
-            <div id="duel-labels" class="duel-overlay">
-              <div class="player-action-label">ACTION</div>
-              <div class="opponent-action-label">ACTION</div>
             </div>
             <div class="timer-content">
               <div class="timer-text">3... 2-1...</div>
@@ -69,17 +66,30 @@
           <div id="controls-zone" class="action-buttons"></div>
         </div>
 
-        <!-- Avatar Glitch à droite -->
-        <div id="opponent-zone" class="avatar-zone right-zone">
-        </div>
+        <div id="opponent-zone" class="avatar-zone right-zone"></div>
       </div>
 
       <div id="bottom-interface" class="bottom-interface">
         <div id="debug-console" class="debug-console"></div>
+        
+        <div class="ads-data-stream">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-2582532644612570"
+               data-ad-slot="7370811139"
+               data-ad-format="horizontal"
+               data-full-width-responsive="true"></ins>
+          <script>
+               (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+
         <div id="right-stats-panel" class="right-stats-panel"></div>
       </div>
+      
     </div>
   </div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
